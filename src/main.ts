@@ -12,11 +12,11 @@ async function run(): Promise<void> {
     core.debug(new Date().toTimeString())
     console.log(process.env)
 
-    const OS = core.getInput("githubRepository", { required: false })
-    core.info(OS)
+    const OS = core.getInput("RUNNER_OS", { required: false })
+    console.log(OS)
 
-    const PKGNAME = core.getInput("runnerOs", { required: false })
-    core.info(PKGNAME)
+    const PKGNAME = core.getInput("GITHUB_REPOSITORY", { required: false })
+    console.log(PKGNAME)
 
     if (OS == 'windows') {
 
