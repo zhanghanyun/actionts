@@ -6,17 +6,17 @@ async function run(): Promise<void> {
   try {
     const ms: string = core.getInput('milliseconds')
     core.debug(`Waiting ${ms} milliseconds ...`)
-    core.info('test running')
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-    console.log(process.env)
+    core.info("ms = ${ms}")
+    //core.debug(new Date().toTimeString())
+    //await wait(parseInt(ms, 10))
+    //core.debug(new Date().toTimeString())
+    //console.log(process.env)
 
-    const OS = core.getInput("RUNNER_OS", { required: false })
-    console.log(OS)
+    const OS = process.env.RUNNER_OS
+    core.info("OS = ${OS}")
 
-    const PKGNAME = core.getInput("GITHUB_REPOSITORY", { required: false })
-    console.log(PKGNAME)
+    const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY
+    core.info("OS = ${GITHUB_REPOSITORY}")
 
     if (OS == 'windows') {
 
