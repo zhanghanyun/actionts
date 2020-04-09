@@ -991,14 +991,21 @@ function run() {
             const RELEASE_TAG = path.basename(process.env.GITHUB_REF);
             core.info(`PKGNAME = ${PKGNAME}`);
             core.info(`RELEASE_TAG = ${RELEASE_TAG}`);
+            let out, file;
             if (OS == 'Windows') {
-                const BIN_NAME = `${PKGNAME}.exe`;
-                core.info(`BIN_NAME = ${BIN_NAME}`);
+                // const BIN_NAME = `${PKGNAME}.exe`
+                // core.info(`BIN_NAME = ${BIN_NAME}`)
+                file = `${PKGNAME}-${RELEASE_TAG}-${OS}.zip`;
+                out = yield getStdout("zip", ["-v", file, `./target/release/${PKGNAME}.exe`]);
             }
             else {
-                const BIN_NAME = PKGNAME;
-                core.info(`BIN_NAME = ${BIN_NAME}`);
+                //  const BIN_NAME = PKGNAME
+                // core.info(`BIN_NAME = ${BIN_NAME}`)
+                file = `${PKGNAME}-${RELEASE_TAG}-${OS}.tar.gz`;
+                out = yield getStdout("tar", ["cvfz", file, `./target/release/${PKGNAME}`]);
             }
+            core.info(`file = ${file}`);
+            core.info(`out = ${out}`);
             core.setOutput('time', new Date().toTimeString());
         }
         catch (error) {
