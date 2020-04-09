@@ -982,10 +982,10 @@ function run() {
             //await wait(parseInt(ms, 10))
             //core.debug(new Date().toTimeString())
             //console.log(process.env)
-            const OS = process.env.RUNNER_OS;
+            var OS = process.env.RUNNER_OS;
             core.info("OS = ${OS}");
-            const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
-            core.info("OS = ${GITHUB_REPOSITORY}");
+            var GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
+            core.info("GITHUB_REPOSITORY = ${GITHUB_REPOSITORY}");
             if (OS == 'windows') {
             }
             else {
