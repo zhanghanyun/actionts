@@ -5,7 +5,7 @@ async function run(): Promise<void> {
   try {
     const ms: string = core.getInput('milliseconds')
     core.debug(`Waiting ${ms} milliseconds ...`)
-    core.info("test running")
+    core.info('test running')
     core.debug(new Date().toTimeString())
     await wait(parseInt(ms, 10))
     core.debug(new Date().toTimeString())
