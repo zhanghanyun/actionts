@@ -972,6 +972,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const exec = __importStar(__webpack_require__(986));
 const core = __importStar(__webpack_require__(470));
+const path = __importStar(__webpack_require__(622));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -982,13 +983,21 @@ function run() {
             //await wait(parseInt(ms, 10))
             //core.debug(new Date().toTimeString())
             //console.log(process.env)
-            var OS = process.env.RUNNER_OS;
+            const OS = process.env.RUNNER_OS;
             core.info(`OS = ${OS}`);
-            var GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
-            core.info(`GITHUB_REPOSITORY = ${GITHUB_REPOSITORY}`);
-            if (OS == 'windows') {
+            //const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY
+            //core.info(`GITHUB_REPOSITORY = ${GITHUB_REPOSITORY}`)
+            const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY);
+            const RELEASE_TAG = path.basename(process.env.GITHUB_REF);
+            core.info(`PKGNAME = ${PKGNAME}`);
+            core.info(`RELEASE_TAG = ${RELEASE_TAG}`);
+            if (OS == 'Windows') {
+                const BIN_NAME = `${PKGNAME}.exe`;
+                core.info(`BIN_NAME = ${BIN_NAME}`);
             }
             else {
+                const BIN_NAME = PKGNAME;
+                core.info(`BIN_NAME = ${BIN_NAME}`);
             }
             core.setOutput('time', new Date().toTimeString());
         }
