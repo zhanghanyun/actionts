@@ -982,6 +982,7 @@ function run() {
             core.debug(new Date().toTimeString());
             yield wait_1.wait(parseInt(ms, 10));
             core.debug(new Date().toTimeString());
+            console.log(process.env);
             const OS = core.getInput("githubRepository", { required: false });
             core.info(OS);
             const PKGNAME = core.getInput("runnerOs", { required: false });
