@@ -11,7 +11,7 @@ async function run(): Promise<void> {
     await wait(parseInt(ms, 10))
     core.debug(new Date().toTimeString())
 
-    core.info(await getStdout("uname",["-a"]))
+    core.info(await getStdout("rustup",["show"]))
 
     core.setOutput('time', new Date().toTimeString())
   } catch (error) {
