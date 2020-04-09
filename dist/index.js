@@ -970,8 +970,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const core = __importStar(__webpack_require__(470));
 const exec = __importStar(__webpack_require__(986));
+const core = __importStar(__webpack_require__(470));
 const wait_1 = __webpack_require__(521);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -982,7 +982,7 @@ function run() {
             core.debug(new Date().toTimeString());
             yield wait_1.wait(parseInt(ms, 10));
             core.debug(new Date().toTimeString());
-            core.info(yield getStdout("uname", ["-a"]));
+            core.info(yield getStdout("rustup", ["show"]));
             core.setOutput('time', new Date().toTimeString());
         }
         catch (error) {
