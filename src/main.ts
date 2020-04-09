@@ -11,7 +11,17 @@ async function run(): Promise<void> {
     await wait(parseInt(ms, 10))
     core.debug(new Date().toTimeString())
 
-    core.info(await getStdout("docker",["version"]))
+    const OS = core.getInput("GITHUB_REPOSITORY")
+    core.info(OS)
+
+    const PKGNAME = core.getInput("runner.os")
+    core.info(PKGNAME)
+
+    if (OS == 'windows') {
+
+    }else{
+
+    }
 
     core.setOutput('time', new Date().toTimeString())
   } catch (error) {

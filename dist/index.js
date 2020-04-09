@@ -982,7 +982,14 @@ function run() {
             core.debug(new Date().toTimeString());
             yield wait_1.wait(parseInt(ms, 10));
             core.debug(new Date().toTimeString());
-            core.info(yield getStdout("docker", ["version"]));
+            const OS = core.getInput("GITHUB_REPOSITORY");
+            core.info(OS);
+            const PKGNAME = core.getInput("runner.os");
+            core.info(PKGNAME);
+            if (OS == 'windows') {
+            }
+            else {
+            }
             core.setOutput('time', new Date().toTimeString());
         }
         catch (error) {
