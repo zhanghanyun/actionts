@@ -15,59 +15,76 @@ async function run(): Promise<void> {
     const OS = process.env.RUNNER_OS
     core.info(`OS = ${OS}`)
 
+    const g = new github.GitHub(process.env.GITHUB_TOKEN!)
+
     const context = github.context;
     core.info(`release = ${context.payload.release}`)
-    core.info(`release_id = ${context.payload.release.id}`)
+    //core.info(`release_id = ${context.payload.release.id}`)
 
 
 
     //const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY
     //core.info(`GITHUB_REPOSITORY = ${GITHUB_REPOSITORY}`)
-    const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY!)
-    const RELEASE_TAG = path.basename(process.env.GITHUB_REF!)
-    core.info(`GITHUB_EVENT_PATH = ${process.env.GITHUB_EVENT_PATH}`)
+    //const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY!)
+    const pkgName = context.repo.repo
+    // const RELEASE_TAG = path.basename(process.env.GITHUB_REF!)
+    const releaseTag = context.payload.release.tag_name
+    //core.info(`GITHUB_EVENT_PATH = ${process.env.GITHUB_EVENT_PATH}`)
     let out, file = ''
     //let  upload = JSON.parse(`${data1}`)
     //core.info(`upload123 ${upload}`)
     // let upload : Upload = {release:{upload_url:''}}
-    const data = fs.readFileSync(process.env.GITHUB_EVENT_PATH!)
-    const MD5_SUM = crypto.createHash('sha256').update(data).digest('hex')
-    core.info(`MD5_SUM = ${MD5_SUM}`)
-    const UPLOAD_URL = JSON.parse(data.toString()).release.upload_url
+    //const data = fs.readFileSync(process.env.GITHUB_EVENT_PATH!)
+
+    const upload_url = context.payload.release.upload_url
     //let upload_url = upload.release.upload_url
     //let upload_url : string = upload.release
     //const URL =  JSON.parse(process.env.GITHUB_EVENT_PATH!)
-    core.info(`UPLOAD_URL = ${UPLOAD_URL}`)
-    core.info(`PKGNAME = ${PKGNAME}`)
-    core.info(`RELEASE_TAG = ${RELEASE_TAG}`)
-    
+    core.info(`upload_url = ${upload_url}`)
+    core.info(`pkgName = ${pkgName}`)
+    core.info(`releaseTag = ${releaseTag}`)
+
 
 
     if (OS == 'Windows') {
       // const BIN_NAME = `${PKGNAME}.exe`
       // core.info(`BIN_NAME = ${BIN_NAME}`)
-      file = `${PKGNAME}-${RELEASE_TAG}-${OS}.zip`
-      out = await getStdout("zip", ["-v", file, `./target/release/${PKGNAME}.exe`])
+      file = `${pkgName}-${releaseTag}-${OS}.zip`
+      out = await getStdout("zip", ["-v", file, `./target/release/${pkgName}.exe`])
     } else {
       //  const BIN_NAME = PKGNAME
       // core.info(`BIN_NAME = ${BIN_NAME}`)
-      file = `${PKGNAME}-${RELEASE_TAG}-${OS}.tar.gz`
-      out = await getStdout("tar", ["cvfz", file, `./target/release/${PKGNAME}`])
+      file = `${pkgName}-${releaseTag}-${OS}.tar.gz`
+      out = await getStdout("tar", ["cvfz", file, `./target/release/${pkgName}`])
     }
     core.info(`file = ${file}`)
     core.info(`out = ${out}`)
+    let f = fs.readFileSync(file)
 
-    const g = new github.GitHub(process.env.GITHUB_TOKEN!)
+    const sha256 = crypto.createHash('sha256').update(f).digest('hex')
+    core.info(`sha256 = ${sha256}`)
 
-   // const headers = { 'content-type': "zip"}
-    //let urlPath = UPLOAD_URL.match(/repos\/(.*){/)[1]
-    //let [owner,repo,,release_id] = urlPath.split('/')
-    // await g.repos.uploadReleaseAsset({
-    //   ...context.repo,
-    //   release_id: 1,
-    //   name: file,
-    //   data: fs.readFileSync(file)
-    // })
+    let rsp = await g.repos.uploadReleaseAsset({
+      url: upload_url,
+      name: file,
+      headers: {
+        "content-length": f.length,
+        "content-type": "application/gzip"
+      },
+      data: f
+    })
+    core.info(`file upload rep: ${rsp}`)
+
+    rsp = await g.repos.uploadReleaseAsset({
+      url: upload_url,
+      name: `${file}.SHA256`,
+      headers: {
+        "content-length": sha256.length,
+        "content-type": "text/plain"
+      },
+      data: sha256
+    })
+    core.info(`sha256 upload rep: ${rsp}`)
 
     core.setOutput('time', new Date().toTimeString())
   } catch (error) {
