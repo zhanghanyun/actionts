@@ -1,6 +1,5 @@
 import * as exec from "@actions/exec"
 import * as core from "@actions/core"
-import * as path from "path"
 import * as fs from "fs"
 import * as crypto from "crypto"
 import * as github from "@actions/github"
@@ -44,8 +43,9 @@ async function run(): Promise<void> {
     core.info(`pkgName = ${pkgName}`)
     core.info(`releaseTag = ${releaseTag}`)
 
-
-
+    let build = await getStdout('cargo',['build','--release'])
+    core.info(`build result: ${build}`)
+    
     if (OS == 'Windows') {
       // const BIN_NAME = `${PKGNAME}.exe`
       // core.info(`BIN_NAME = ${BIN_NAME}`)
