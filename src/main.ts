@@ -39,7 +39,7 @@ async function run(): Promise<void> {
         core.setFailed(err.message)
         return
       }
-      core.info(`data = {$data}`)
+      core.info(`data = ${data}`)
       upload = JSON.parse(data.toString())
     })
     //let upload_url : string = upload.release
