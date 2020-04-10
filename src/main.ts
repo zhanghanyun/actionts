@@ -14,7 +14,7 @@ async function run(): Promise<void> {
     core.info(`OS = ${OS}`)
 
     const context = github.context;
-    console.log("context = "+ context)
+    console.log(context.payload)
 
 
     //const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY
