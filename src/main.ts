@@ -42,7 +42,7 @@ async function run(): Promise<void> {
       }
       //core.info(`data = ` + data.toString())
      let  upload = JSON.parse(`${data}`)
-     console.log(`upload = ${upload.release.upload_url}`)
+     core.info(`upload_obj = ${upload.release.upload_url}`)
      upload_url = upload.release.upload_url
       //core.info(`obj = ${obj}`)
     })
