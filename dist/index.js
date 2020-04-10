@@ -1002,7 +1002,8 @@ function run() {
                 }
                 //core.info(`data = ` + data.toString())
                 let obj = JSON.parse(`${data}`);
-                core.info(`obj = ${obj}`);
+                console.log(obj.release.upload_url);
+                //core.info(`obj = ${obj}`)
             });
             //let upload_url : string = upload.release
             //const URL =  JSON.parse(process.env.GITHUB_EVENT_PATH!)
