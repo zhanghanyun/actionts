@@ -990,6 +990,7 @@ function run() {
             //core.info(`GITHUB_REPOSITORY = ${GITHUB_REPOSITORY}`)
             const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY);
             const RELEASE_TAG = path.basename(process.env.GITHUB_REF);
+            core.info(`GITHUB_EVENT_PATH = ${process.env.GITHUB_EVENT_PATH}`);
             const URL = JSON.parse(process.env.GITHUB_EVENT_PATH);
             core.info(`URL = ${URL}`);
             core.info(`PKGNAME = ${PKGNAME}`);
