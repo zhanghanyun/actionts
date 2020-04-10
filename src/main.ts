@@ -2,6 +2,7 @@ import * as exec from "@actions/exec";
 import * as core from "@actions/core";
 import { wait } from './wait'
 import * as path from "path"
+import * as md5 from "md5-file"
 
 async function run(): Promise<void> {
   try {
@@ -20,6 +21,8 @@ async function run(): Promise<void> {
     //core.info(`GITHUB_REPOSITORY = ${GITHUB_REPOSITORY}`)
     const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY!)
     const RELEASE_TAG = path.basename(process.env.GITHUB_REF!)
+    const URL =  JSON.parse(process.env.GITHUB_EVENT_PATH!)
+    core.info(`URL = ${URL}`)
     core.info(`PKGNAME = ${PKGNAME}`)
     core.info(`RELEASE_TAG = ${RELEASE_TAG}`)
     let out, file : string
@@ -34,8 +37,12 @@ async function run(): Promise<void> {
      file = `${PKGNAME}-${RELEASE_TAG}-${OS}.tar.gz`
      out = await getStdout("tar",["cvfz",file,`./target/release/${PKGNAME}`])
     }
+    const MD5_SUM = await md5.default(file)
     core.info(`file = ${file}`)
     core.info(`out = ${out}`)
+    core.info(`MD5_SUM = ${MD5_SUM}`)
+   
+
 
     core.setOutput('time', new Date().toTimeString())
   } catch (error) {

@@ -973,6 +973,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const exec = __importStar(__webpack_require__(986));
 const core = __importStar(__webpack_require__(470));
 const path = __importStar(__webpack_require__(622));
+const md5 = __importStar(__webpack_require__(813));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -989,6 +990,8 @@ function run() {
             //core.info(`GITHUB_REPOSITORY = ${GITHUB_REPOSITORY}`)
             const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY);
             const RELEASE_TAG = path.basename(process.env.GITHUB_REF);
+            const URL = JSON.parse(process.env.GITHUB_EVENT_PATH);
+            core.info(`URL = ${URL}`);
             core.info(`PKGNAME = ${PKGNAME}`);
             core.info(`RELEASE_TAG = ${RELEASE_TAG}`);
             let out, file;
@@ -1004,8 +1007,10 @@ function run() {
                 file = `${PKGNAME}-${RELEASE_TAG}-${OS}.tar.gz`;
                 out = yield getStdout("tar", ["cvfz", file, `./target/release/${PKGNAME}`]);
             }
+            const MD5_SUM = yield md5.default(file);
             core.info(`file = ${file}`);
             core.info(`out = ${out}`);
+            core.info(`MD5_SUM = ${MD5_SUM}`);
             core.setOutput('time', new Date().toTimeString());
         }
         catch (error) {
@@ -1036,6 +1041,13 @@ run();
 /***/ (function(module) {
 
 module.exports = require("assert");
+
+/***/ }),
+
+/***/ 417:
+/***/ (function(module) {
+
+module.exports = require("crypto");
 
 /***/ }),
 
@@ -1541,6 +1553,56 @@ function isUnixExecutable(stats) {
 /***/ (function(module) {
 
 module.exports = require("fs");
+
+/***/ }),
+
+/***/ 813:
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+const crypto = __webpack_require__(417)
+const fs = __webpack_require__(747)
+
+const BUFFER_SIZE = 8192
+
+function md5FileSync (path) {
+  const fd = fs.openSync(path, 'r')
+  const hash = crypto.createHash('md5')
+  const buffer = Buffer.alloc(BUFFER_SIZE)
+
+  try {
+    let bytesRead
+
+    do {
+      bytesRead = fs.readSync(fd, buffer, 0, BUFFER_SIZE)
+      hash.update(buffer.slice(0, bytesRead))
+    } while (bytesRead === BUFFER_SIZE)
+  } finally {
+    fs.closeSync(fd)
+  }
+
+  return hash.digest('hex')
+}
+
+function md5File (path) {
+  return new Promise((resolve, reject) => {
+    const output = crypto.createHash('md5')
+    const input = fs.createReadStream(path)
+
+    input.on('error', (err) => {
+      reject(err)
+    })
+
+    output.once('readable', () => {
+      resolve(output.read().toString('hex'))
+    })
+
+    input.pipe(output)
+  })
+}
+
+module.exports = md5File
+module.exports.sync = md5FileSync
+
 
 /***/ }),
 
