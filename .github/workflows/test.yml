@@ -22,3 +22,6 @@ jobs:
     - uses: ./
       with: 
         milliseconds: 1000
+    - name: command
+      run: |
+        cat /home/runner/work/_temp/_github_workflow/event.json
