@@ -19,7 +19,8 @@ async function run(): Promise<void> {
     const g = new github.GitHub(process.env.GITHUB_TOKEN!)
 
     const context = github.context;
-    core.info(`release = ${context.payload.release}`)
+    //core.info(`release = ${context.payload.release}`)
+    console.dir(`release = ${context.payload.release}`, { depth: null });
     //core.info(`release_id = ${context.payload.release.id}`)
 
 
@@ -54,7 +55,7 @@ async function run(): Promise<void> {
       // core.info(`BIN_NAME = ${BIN_NAME}`)
       file = `${pkgName}-${releaseTag}-${OS}.zip`
       io.mv(`./target/release/${pkgName}.exe`,`./${pkgName}.exe`)
-      out = await getStdout("zip", ["-v", file, `${pkgName}.exe`])
+      out = await getStdout("7z", ["a", file, `${pkgName}.exe`])
     } else {
       //  const BIN_NAME = PKGNAME
       // core.info(`BIN_NAME = ${BIN_NAME}`)
