@@ -39,8 +39,9 @@ async function run(): Promise<void> {
         core.setFailed(err.message)
         return
       }
-      core.info(`data = ` + data.toString())
-      upload = JSON.parse(`${data}`)
+      //core.info(`data = ` + data.toString())
+      let obj = JSON.parse(`${data}`)
+      core.info(`obj = ${obj}`)
     })
     //let upload_url : string = upload.release
     //const URL =  JSON.parse(process.env.GITHUB_EVENT_PATH!)
