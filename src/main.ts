@@ -5,14 +5,6 @@ import * as path from "path"
 import * as md5 from "md5-file"
 import * as fs from "fs";
 
-interface Upload {
-  release :  release
-}
-
-interface release{
-  upload_url : string
-}
-
 async function run(): Promise<void> {
   try {
     const ms: string = core.getInput('milliseconds')
@@ -31,43 +23,36 @@ async function run(): Promise<void> {
     const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY!)
     const RELEASE_TAG = path.basename(process.env.GITHUB_REF!)
     core.info(`GITHUB_EVENT_PATH = ${process.env.GITHUB_EVENT_PATH}`)
-    let out, file , upload_url = ''
-    
-   // let upload : Upload = {release:{upload_url:''}}
-    fs.readFile(process.env.GITHUB_EVENT_PATH!,(err,data) => {
-      if (err) {
-        core.info(`${err}`)
-        core.setFailed(err.message)
-        return
-      }
-      //core.info(`data = ` + data.toString())
-     let  upload = JSON.parse(`${data}`)
-     core.info(`upload_obj = ${upload.release.upload_url}`)
-     upload_url = upload.release.upload_url
-      //core.info(`obj = ${obj}`)
-    })
+    let out, file = ''
+    //let  upload = JSON.parse(`${data1}`)
+    //core.info(`upload123 ${upload}`)
+    // let upload : Upload = {release:{upload_url:''}}
+    let data = fs.readFileSync(process.env.GITHUB_EVENT_PATH!)
+    let upload = JSON.parse(data.toString())
+    let upload_url = upload.release.upload_url
     //let upload_url : string = upload.release
     //const URL =  JSON.parse(process.env.GITHUB_EVENT_PATH!)
     core.info(`upload = ${upload_url}`)
     core.info(`PKGNAME = ${PKGNAME}`)
     core.info(`RELEASE_TAG = ${RELEASE_TAG}`)
-    
+    const MD5_SUM = await md5.default(process.env.GITHUB_EVENT_PATH!)
+    core.info(`MD5_SUM = ${MD5_SUM}`)
+
+
     if (OS == 'Windows') {
-     // const BIN_NAME = `${PKGNAME}.exe`
-     // core.info(`BIN_NAME = ${BIN_NAME}`)
-     file = `${PKGNAME}-${RELEASE_TAG}-${OS}.zip`
-     out = await getStdout("zip",["-v",file,`./target/release/${PKGNAME}.exe`])
-    }else{
-    //  const BIN_NAME = PKGNAME
-     // core.info(`BIN_NAME = ${BIN_NAME}`)
-     file = `${PKGNAME}-${RELEASE_TAG}-${OS}.tar.gz`
-     out = await getStdout("tar",["cvfz",file,`./target/release/${PKGNAME}`])
+      // const BIN_NAME = `${PKGNAME}.exe`
+      // core.info(`BIN_NAME = ${BIN_NAME}`)
+      file = `${PKGNAME}-${RELEASE_TAG}-${OS}.zip`
+      out = await getStdout("zip", ["-v", file, `./target/release/${PKGNAME}.exe`])
+    } else {
+      //  const BIN_NAME = PKGNAME
+      // core.info(`BIN_NAME = ${BIN_NAME}`)
+      file = `${PKGNAME}-${RELEASE_TAG}-${OS}.tar.gz`
+      out = await getStdout("tar", ["cvfz", file, `./target/release/${PKGNAME}`])
     }
-    const MD5_SUM = await md5.default(file)
     core.info(`file = ${file}`)
     core.info(`out = ${out}`)
-    core.info(`MD5_SUM = ${MD5_SUM}`)
-   
+
 
 
     core.setOutput('time', new Date().toTimeString())
