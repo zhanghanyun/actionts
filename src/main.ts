@@ -1,23 +1,22 @@
-import * as exec from "@actions/exec";
-import * as core from "@actions/core";
-import { wait } from './wait'
+import * as exec from "@actions/exec"
+import * as core from "@actions/core"
 import * as path from "path"
-import * as md5 from "md5-file"
-import * as fs from "fs";
+import * as fs from "fs"
+import * as crypto from "crypto"
+import * as github from "@actions/github"
 
 async function run(): Promise<void> {
   try {
     const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`)
     core.info(`ms = ${ms}`)
-    //core.debug(new Date().toTimeString())
-    //await wait(parseInt(ms, 10))
-    //core.debug(new Date().toTimeString())
-    //console.log(process.env)
 
     const OS = process.env.RUNNER_OS
-
     core.info(`OS = ${OS}`)
+
+    const context = github.context;
+    console.log("context = "+ context)
+
+
     //const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY
     //core.info(`GITHUB_REPOSITORY = ${GITHUB_REPOSITORY}`)
     const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY!)
@@ -27,16 +26,17 @@ async function run(): Promise<void> {
     //let  upload = JSON.parse(`${data1}`)
     //core.info(`upload123 ${upload}`)
     // let upload : Upload = {release:{upload_url:''}}
-    let data = fs.readFileSync(process.env.GITHUB_EVENT_PATH!)
-    let upload = JSON.parse(data.toString())
-    let upload_url = upload.release.upload_url
+    const data = fs.readFileSync(process.env.GITHUB_EVENT_PATH!)
+    const MD5_SUM = crypto.createHash('sha256').update(data).digest('hex')
+    core.info(`MD5_SUM = ${MD5_SUM}`)
+    const UPLOAD_URL = JSON.parse(data.toString()).release.upload_url
+    //let upload_url = upload.release.upload_url
     //let upload_url : string = upload.release
     //const URL =  JSON.parse(process.env.GITHUB_EVENT_PATH!)
-    core.info(`upload = ${upload_url}`)
+    core.info(`UPLOAD_URL = ${UPLOAD_URL}`)
     core.info(`PKGNAME = ${PKGNAME}`)
     core.info(`RELEASE_TAG = ${RELEASE_TAG}`)
-    const MD5_SUM = await md5.default(process.env.GITHUB_EVENT_PATH!)
-    core.info(`MD5_SUM = ${MD5_SUM}`)
+    
 
 
     if (OS == 'Windows') {
@@ -53,7 +53,16 @@ async function run(): Promise<void> {
     core.info(`file = ${file}`)
     core.info(`out = ${out}`)
 
+    const g = new github.GitHub(process.env.GITHUB_TOKEN!)
 
+   // const headers = { 'content-type': "zip"}
+    //let urlPath = UPLOAD_URL.match(/repos\/(.*){/)[1]
+    //let [owner,repo,,release_id] = urlPath.split('/')
+    // await g.repos.uploadReleaseAsset({
+    //   ...context.repo,
+    //   name: file,
+    //   data: fs.readFileSync(file)
+    // })
 
     core.setOutput('time', new Date().toTimeString())
   } catch (error) {
