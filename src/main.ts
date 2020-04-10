@@ -4,7 +4,9 @@ import * as fs from "fs"
 import * as crypto from "crypto"
 import * as github from "@actions/github"
 import * as Webhooks from '@octokit/webhooks'
-import * as toml from "toml";
+import * as toml from "toml"
+import * as io from '@actions/io'
+
 
 async function run(): Promise<void> {
   try {
@@ -51,12 +53,14 @@ async function run(): Promise<void> {
       // const BIN_NAME = `${PKGNAME}.exe`
       // core.info(`BIN_NAME = ${BIN_NAME}`)
       file = `${pkgName}-${releaseTag}-${OS}.zip`
-      out = await getStdout("zip", ["-v", file, `./target/release/${pkgName}.exe`])
+      io.mv(`./target/release/${pkgName}.exe`,`./${pkgName}.exe`)
+      out = await getStdout("zip", ["-v", file, `./${pkgName}.exe`])
     } else {
       //  const BIN_NAME = PKGNAME
       // core.info(`BIN_NAME = ${BIN_NAME}`)
       file = `${pkgName}-${releaseTag}-${OS}.tar.gz`
-      out = await getStdout("tar", ["cvfz", file, `./target/release/${pkgName}`])
+      io.mv(`./target/release/${pkgName}`,`./${pkgName}`)
+      out = await getStdout("tar", ["cvfz", file, `./${pkgName}`])
     }
     core.info(`file = ${file}`)
     core.info(`out = ${out}`)

@@ -9,7 +9,7 @@
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
-    "pack": "ncc build -m",
+    "pack": "ncc build",
     "test": "jest",
     "b": "npm run build && npm run pack",
     "all": "npm run build && npm run format && npm run lint && npm run pack && npm test"
@@ -29,6 +29,7 @@
     "@actions/core": "^1.2.0",
     "@actions/exec": "^1.0.3",
     "@actions/github": "^2.1.1",
+    "@actions/io": "^1.0.2",
     "@octokit/webhooks": "^7.1.2",
     "toml": "^3.0.0"
   },
