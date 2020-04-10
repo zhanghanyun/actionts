@@ -3,6 +3,7 @@ import * as core from "@actions/core";
 import { wait } from './wait'
 import * as path from "path"
 import * as md5 from "md5-file"
+import * as fs from "fs";
 
 async function run(): Promise<void> {
   try {
@@ -22,11 +23,20 @@ async function run(): Promise<void> {
     const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY!)
     const RELEASE_TAG = path.basename(process.env.GITHUB_REF!)
     core.info(`GITHUB_EVENT_PATH = ${process.env.GITHUB_EVENT_PATH}`)
-    const URL =  JSON.parse(process.env.GITHUB_EVENT_PATH!)
-    core.info(`URL = ${URL}`)
+    let out, file , upload = ''
+    fs.readFile(process.env.GITHUB_EVENT_PATH!,(err,data) => {
+      if (err) {
+        core.info(`${err}`)
+        core.setFailed(err.message)
+        return
+      }
+      upload = JSON.parse(data.toString())
+    })
+    //const URL =  JSON.parse(process.env.GITHUB_EVENT_PATH!)
+    core.info(`upload = ${upload}`)
     core.info(`PKGNAME = ${PKGNAME}`)
     core.info(`RELEASE_TAG = ${RELEASE_TAG}`)
-    let out, file : string
+    
     if (OS == 'Windows') {
      // const BIN_NAME = `${PKGNAME}.exe`
      // core.info(`BIN_NAME = ${BIN_NAME}`)

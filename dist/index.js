@@ -974,6 +974,7 @@ const exec = __importStar(__webpack_require__(986));
 const core = __importStar(__webpack_require__(470));
 const path = __importStar(__webpack_require__(622));
 const md5 = __importStar(__webpack_require__(813));
+const fs = __importStar(__webpack_require__(747));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -991,11 +992,19 @@ function run() {
             const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY);
             const RELEASE_TAG = path.basename(process.env.GITHUB_REF);
             core.info(`GITHUB_EVENT_PATH = ${process.env.GITHUB_EVENT_PATH}`);
-            const URL = JSON.parse(process.env.GITHUB_EVENT_PATH);
-            core.info(`URL = ${URL}`);
+            let out, file, upload = '';
+            fs.readFile(process.env.GITHUB_EVENT_PATH, (err, data) => {
+                if (err) {
+                    core.info(`${err}`);
+                    core.setFailed(err.message);
+                    return;
+                }
+                upload = JSON.parse(data.toString());
+            });
+            //const URL =  JSON.parse(process.env.GITHUB_EVENT_PATH!)
+            core.info(`upload = ${upload}`);
             core.info(`PKGNAME = ${PKGNAME}`);
             core.info(`RELEASE_TAG = ${RELEASE_TAG}`);
-            let out, file;
             if (OS == 'Windows') {
                 // const BIN_NAME = `${PKGNAME}.exe`
                 // core.info(`BIN_NAME = ${BIN_NAME}`)
