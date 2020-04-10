@@ -4424,7 +4424,8 @@ function run() {
             const g = new github.GitHub(process.env.GITHUB_TOKEN);
             const context = github.context;
             //core.info(`release = ${context.payload.release}`)
-            console.dir(`release = ${context.payload.release}`, { depth: null });
+            core.info("release: ");
+            console.dir(context.payload.release, { depth: null });
             //core.info(`release_id = ${context.payload.release.id}`)
             //const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY
             //core.info(`GITHUB_REPOSITORY = ${GITHUB_REPOSITORY}`)
@@ -4476,7 +4477,9 @@ function run() {
                 },
                 data: f
             });
-            core.info(`file upload rep: ${rsp}`);
+            //core.info(`file upload rep: ${rsp.data}`)
+            core.info("file upload: ");
+            console.dir(rsp, { depth: null });
             rsp = yield g.repos.uploadReleaseAsset({
                 url: upload_url,
                 name: `${file}.SHA256`,
@@ -4486,7 +4489,9 @@ function run() {
                 },
                 data: sha256
             });
-            core.info(`sha256 upload rep: ${rsp}`);
+            //core.info(`sha256 upload rep: ${rsp.data}`)
+            core.info("sha256 upload: ");
+            console.dir(rsp, { depth: null });
             core.setOutput('time', new Date().toTimeString());
         }
         catch (error) {

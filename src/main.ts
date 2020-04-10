@@ -20,7 +20,8 @@ async function run(): Promise<void> {
 
     const context = github.context;
     //core.info(`release = ${context.payload.release}`)
-    console.dir(`release = ${context.payload.release}`, { depth: null });
+    core.info("release: ")
+    console.dir(context.payload.release, { depth: null });
     //core.info(`release_id = ${context.payload.release.id}`)
 
 
@@ -28,7 +29,7 @@ async function run(): Promise<void> {
     //const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY
     //core.info(`GITHUB_REPOSITORY = ${GITHUB_REPOSITORY}`)
     //const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY!)
-    const doc = toml.parse(fs.readFileSync('Cargo.toml','utf-8'))
+    const doc = toml.parse(fs.readFileSync('Cargo.toml', 'utf-8'))
     const pkgName = doc.package.name
     // const RELEASE_TAG = path.basename(process.env.GITHUB_REF!)
     const releaseTag = context.payload.release.tag_name
@@ -47,20 +48,20 @@ async function run(): Promise<void> {
     core.info(`pkgName = ${pkgName}`)
     core.info(`releaseTag = ${releaseTag}`)
 
-    let build = await getStdout('cargo',['build','--release'])
+    let build = await getStdout('cargo', ['build', '--release'])
     core.info(`build result: ${build}`)
 
     if (OS == 'Windows') {
       // const BIN_NAME = `${PKGNAME}.exe`
       // core.info(`BIN_NAME = ${BIN_NAME}`)
       file = `${pkgName}-${releaseTag}-${OS}.zip`
-      io.mv(`./target/release/${pkgName}.exe`,`./${pkgName}.exe`)
+      io.mv(`./target/release/${pkgName}.exe`, `./${pkgName}.exe`)
       out = await getStdout("7z", ["a", file, `${pkgName}.exe`])
     } else {
       //  const BIN_NAME = PKGNAME
       // core.info(`BIN_NAME = ${BIN_NAME}`)
       file = `${pkgName}-${releaseTag}-${OS}.tar.gz`
-      io.mv(`./target/release/${pkgName}`,`./${pkgName}`)
+      io.mv(`./target/release/${pkgName}`, `./${pkgName}`)
       out = await getStdout("tar", ["cvfz", file, `${pkgName}`])
     }
     core.info(`file = ${file}`)
@@ -79,7 +80,9 @@ async function run(): Promise<void> {
       },
       data: f
     })
-    core.info(`file upload rep: ${rsp}`)
+    //core.info(`file upload rep: ${rsp.data}`)
+    core.info("file upload: ")
+    console.dir(rsp, { depth: null });
 
     rsp = await g.repos.uploadReleaseAsset({
       url: upload_url,
@@ -90,8 +93,9 @@ async function run(): Promise<void> {
       },
       data: sha256
     })
-    core.info(`sha256 upload rep: ${rsp}`)
-
+    //core.info(`sha256 upload rep: ${rsp.data}`)
+    core.info("sha256 upload: ")
+    console.dir(rsp, { depth: null });
     core.setOutput('time', new Date().toTimeString())
   } catch (error) {
     core.setFailed(error.message)
