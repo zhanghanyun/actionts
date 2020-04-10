@@ -1000,8 +1000,8 @@ function run() {
                     core.setFailed(err.message);
                     return;
                 }
-                core.info(`data = ${data}`);
-                upload = JSON.parse(data.toString());
+                core.info(`data = ` + data.toString());
+                upload = JSON.parse(`${data}`);
             });
             //let upload_url : string = upload.release
             //const URL =  JSON.parse(process.env.GITHUB_EVENT_PATH!)
