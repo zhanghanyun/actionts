@@ -4,6 +4,8 @@ import * as path from "path"
 import * as fs from "fs"
 import * as crypto from "crypto"
 import * as github from "@actions/github"
+import * as Webhooks from '@octokit/webhooks'
+
 
 async function run(): Promise<void> {
   try {
@@ -14,7 +16,9 @@ async function run(): Promise<void> {
     core.info(`OS = ${OS}`)
 
     const context = github.context;
-    console.log(context.payload)
+    core.info(`release = ${context.payload.release}`)
+    core.info(`release_id = ${context.payload.release.id}`)
+
 
 
     //const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY
@@ -60,6 +64,7 @@ async function run(): Promise<void> {
     //let [owner,repo,,release_id] = urlPath.split('/')
     // await g.repos.uploadReleaseAsset({
     //   ...context.repo,
+    //   release_id: 1,
     //   name: file,
     //   data: fs.readFileSync(file)
     // })
