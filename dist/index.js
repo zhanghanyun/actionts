@@ -992,7 +992,8 @@ function run() {
             const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY);
             const RELEASE_TAG = path.basename(process.env.GITHUB_REF);
             core.info(`GITHUB_EVENT_PATH = ${process.env.GITHUB_EVENT_PATH}`);
-            let out, file, upload = '';
+            let out, file;
+            let upload = { release: { upload_url: '' } };
             fs.readFile(process.env.GITHUB_EVENT_PATH, (err, data) => {
                 if (err) {
                     core.info(`${err}`);
@@ -1001,8 +1002,9 @@ function run() {
                 }
                 upload = JSON.parse(data.toString());
             });
+            //let upload_url : string = upload.release
             //const URL =  JSON.parse(process.env.GITHUB_EVENT_PATH!)
-            core.info(`upload = ${upload}`);
+            core.info(`upload = ${upload.release.upload_url}`);
             core.info(`PKGNAME = ${PKGNAME}`);
             core.info(`RELEASE_TAG = ${RELEASE_TAG}`);
             if (OS == 'Windows') {

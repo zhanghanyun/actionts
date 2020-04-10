@@ -5,6 +5,14 @@ import * as path from "path"
 import * as md5 from "md5-file"
 import * as fs from "fs";
 
+interface Upload {
+  release :  release
+}
+
+interface release{
+  upload_url : string
+}
+
 async function run(): Promise<void> {
   try {
     const ms: string = core.getInput('milliseconds')
@@ -23,17 +31,19 @@ async function run(): Promise<void> {
     const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY!)
     const RELEASE_TAG = path.basename(process.env.GITHUB_REF!)
     core.info(`GITHUB_EVENT_PATH = ${process.env.GITHUB_EVENT_PATH}`)
-    let out, file , upload = ''
+    let out, file : string
+    let upload : Upload = {release:{upload_url:''}}
     fs.readFile(process.env.GITHUB_EVENT_PATH!,(err,data) => {
       if (err) {
         core.info(`${err}`)
         core.setFailed(err.message)
         return
       }
-      upload = JSON.parse(data.toString())
+       upload = JSON.parse(data.toString())
     })
+    //let upload_url : string = upload.release
     //const URL =  JSON.parse(process.env.GITHUB_EVENT_PATH!)
-    core.info(`upload = ${upload}`)
+    core.info(`upload = ${upload.release.upload_url}`)
     core.info(`PKGNAME = ${PKGNAME}`)
     core.info(`RELEASE_TAG = ${RELEASE_TAG}`)
     
