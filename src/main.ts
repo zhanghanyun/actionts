@@ -54,13 +54,13 @@ async function run(): Promise<void> {
       // core.info(`BIN_NAME = ${BIN_NAME}`)
       file = `${pkgName}-${releaseTag}-${OS}.zip`
       io.mv(`./target/release/${pkgName}.exe`,`./${pkgName}.exe`)
-      out = await getStdout("zip", ["-v", file, `./${pkgName}.exe`])
+      out = await getStdout("zip", ["-v", file, `${pkgName}.exe`])
     } else {
       //  const BIN_NAME = PKGNAME
       // core.info(`BIN_NAME = ${BIN_NAME}`)
       file = `${pkgName}-${releaseTag}-${OS}.tar.gz`
       io.mv(`./target/release/${pkgName}`,`./${pkgName}`)
-      out = await getStdout("tar", ["cvfz", file, `./${pkgName}`])
+      out = await getStdout("tar", ["cvfz", file, `${pkgName}`])
     }
     core.info(`file = ${file}`)
     core.info(`out = ${out}`)

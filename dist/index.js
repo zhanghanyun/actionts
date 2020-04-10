@@ -4452,14 +4452,14 @@ function run() {
                 // core.info(`BIN_NAME = ${BIN_NAME}`)
                 file = `${pkgName}-${releaseTag}-${OS}.zip`;
                 io.mv(`./target/release/${pkgName}.exe`, `./${pkgName}.exe`);
-                out = yield getStdout("zip", ["-v", file, `./${pkgName}.exe`]);
+                out = yield getStdout("zip", ["-v", file, `${pkgName}.exe`]);
             }
             else {
                 //  const BIN_NAME = PKGNAME
                 // core.info(`BIN_NAME = ${BIN_NAME}`)
                 file = `${pkgName}-${releaseTag}-${OS}.tar.gz`;
                 io.mv(`./target/release/${pkgName}`, `./${pkgName}`);
-                out = yield getStdout("tar", ["cvfz", file, `./${pkgName}`]);
+                out = yield getStdout("tar", ["cvfz", file, `${pkgName}`]);
             }
             core.info(`file = ${file}`);
             core.info(`out = ${out}`);
