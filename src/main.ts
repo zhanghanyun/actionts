@@ -4,7 +4,7 @@ import * as fs from "fs"
 import * as crypto from "crypto"
 import * as github from "@actions/github"
 import * as Webhooks from '@octokit/webhooks'
-
+import toml from "toml";
 
 async function run(): Promise<void> {
   try {
@@ -25,7 +25,8 @@ async function run(): Promise<void> {
     //const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY
     //core.info(`GITHUB_REPOSITORY = ${GITHUB_REPOSITORY}`)
     //const PKGNAME = path.basename(process.env.GITHUB_REPOSITORY!)
-    const pkgName = context.repo.repo
+    const doc = toml.parse(fs.readFileSync('Cargo.toml','utf-8'))
+    const pkgName = doc.package.name
     // const RELEASE_TAG = path.basename(process.env.GITHUB_REF!)
     const releaseTag = context.payload.release.tag_name
     //core.info(`GITHUB_EVENT_PATH = ${process.env.GITHUB_EVENT_PATH}`)
@@ -45,7 +46,7 @@ async function run(): Promise<void> {
 
     let build = await getStdout('cargo',['build','--release'])
     core.info(`build result: ${build}`)
-    
+
     if (OS == 'Windows') {
       // const BIN_NAME = `${PKGNAME}.exe`
       // core.info(`BIN_NAME = ${BIN_NAME}`)
