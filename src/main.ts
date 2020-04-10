@@ -4,7 +4,7 @@ import * as fs from "fs"
 import * as crypto from "crypto"
 import * as github from "@actions/github"
 import * as Webhooks from '@octokit/webhooks'
-import toml from "toml";
+import * as toml from "toml";
 
 async function run(): Promise<void> {
   try {
